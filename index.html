@@ -536,10 +536,13 @@
     color: var(--rose);
   }
   .savings-pct {
-    font-size: 13px;
-    color: var(--ink-dim);
-    font-weight: 500;
-    margin-top: 2px;
+    font-size: 15px;
+    color: var(--emerald);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .savings-hero.bad .savings-pct {
+    color: var(--rose);
   }
   .savings-explain {
     font-size: 13px;
@@ -1366,14 +1369,6 @@
             <div class="ref-rate-mono"><span id="blueMid">—</span><span class="small">venta</span></div>
           </div>
 
-          <div class="ref-rate mep">
-            <div class="ref-rate-head">
-              <div class="n"><span class="flag" id="refFlag3"></span>MEP</div>
-              <span class="ref-rate-badge mep">Bolsa</span>
-            </div>
-            <div class="ref-rate-mono"><span id="mepMid">—</span><span class="small">venta</span></div>
-          </div>
-
           <div class="ref-rate tarj">
             <div class="ref-rate-head">
               <div class="n"><span class="flag" id="refFlag4"></span>Tarjeta</div>
@@ -1473,7 +1468,7 @@
       </div>
 
       <details>
-        <summary>Detalle mes a mes · Valor presente de cada cuota</summary>
+        <summary>Ver detalle mes a mes · Valor presente de cada cuota</summary>
         <div class="table-wrap">
           <table id="breakdown">
             <thead>
@@ -1770,7 +1765,7 @@
   </div>
 
   <footer>
-    <div><b>Datos en vivo:</b> DolarApi.com (USD oficial / blue / MEP, EUR) + AwesomeAPI (BRL) + cl.dolarapi (CLP). CORS abierto, sin API key.</div>
+    <div><b>Datos en vivo:</b> Ámbito Financiero (USD oficial / blue / MEP) + DolarApi (EUR, fallback USD) + AwesomeAPI (BRL) + cl.dolarapi (CLP).</div>
     <div><b>IPC referencia:</b> INDEC marzo 2026 · 3,4% mensual · 32,6% i.a. · REM proyecta 2,6% promedio mensual abr–dic 2026.</div>
     <div><b>Dólar tarjeta:</b> oficial × 1,30 (RG 5617). Vigente para bienes y turismo en exterior. Suscripciones digitales: sin recargo desde 2/1/2026.</div>
     <div style="margin-top: 6px;">No constituye asesoramiento financiero. Verificá topes y vigencias en la fuente oficial antes de operar.</div>
@@ -1842,16 +1837,38 @@
   async function loadRates() {
     const dot = document.getElementById('statusDot');
     const txt = document.getElementById('statusText');
+    let usdSource = '';
     try {
-      const usdRes = await fetch('https://dolarapi.com/v1/dolares');
-      if (!usdRes.ok) throw new Error('usd');
-      const usdData = await usdRes.json();
-      usdData.forEach(d => {
-        const mid = (d.compra && d.venta) ? (d.compra + d.venta) / 2 : (d.venta || d.compra);
-        if (d.casa === 'oficial') rates.USD_OFI_RATE = { compra: d.compra, venta: d.venta, mid };
-        if (d.casa === 'blue')    rates.USD_BLUE_RATE = { compra: d.compra, venta: d.venta, mid };
-        if (d.casa === 'bolsa')   rates.USD_MEP_RATE = { compra: d.compra, venta: d.venta, mid };
-      });
+      // Intentar Ámbito Financiero primero
+      try {
+        const [ofiR, blueR, mepR] = await Promise.all([
+          fetch('https://mercados.ambito.com//dolar/oficial/variacion'),
+          fetch('https://mercados.ambito.com//dolar/informal/variacion'),
+          fetch('https://mercados.ambito.com//dolarrava/mep/variacion'),
+        ]);
+        if (!ofiR.ok || !blueR.ok) throw new Error('ambito');
+        const parseAmbito = (d) => {
+          const compra = parseESAR(d.compra);
+          const venta  = parseESAR(d.venta);
+          return { compra, venta, mid: (compra && venta) ? (compra + venta) / 2 : (venta || compra) };
+        };
+        rates.USD_OFI_RATE  = parseAmbito(await ofiR.json());
+        rates.USD_BLUE_RATE = parseAmbito(await blueR.json());
+        if (mepR.ok) rates.USD_MEP_RATE = parseAmbito(await mepR.json());
+        usdSource = 'Ámbito';
+      } catch (eAmb) {
+        // Fallback: DolarApi
+        const usdRes = await fetch('https://dolarapi.com/v1/dolares');
+        if (!usdRes.ok) throw new Error('usd');
+        const usdData = await usdRes.json();
+        usdData.forEach(d => {
+          const mid = (d.compra && d.venta) ? (d.compra + d.venta) / 2 : (d.venta || d.compra);
+          if (d.casa === 'oficial') rates.USD_OFI_RATE  = { compra: d.compra, venta: d.venta, mid };
+          if (d.casa === 'blue')    rates.USD_BLUE_RATE = { compra: d.compra, venta: d.venta, mid };
+          if (d.casa === 'bolsa')   rates.USD_MEP_RATE  = { compra: d.compra, venta: d.venta, mid };
+        });
+        usdSource = 'DolarApi (fallback)';
+      }
 
       try {
         const eurRes = await fetch('https://dolarapi.com/v1/cotizaciones/eur');
@@ -1886,7 +1903,7 @@
       dot.classList.remove('err');
       const now = new Date();
       txt.textContent = `En vivo · ${now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'})}`;
-      document.getElementById('rateUpdate').textContent = `actualizado ${now.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}`;
+      document.getElementById('rateUpdate').textContent = `actualizado ${now.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})} · ${usdSource}`;
     } catch (err) {
       console.error(err);
       dot.classList.add('err');
@@ -1907,7 +1924,6 @@
   function renderRefRates() {
     document.getElementById('refFlag1').innerHTML = FLAGS.us;
     document.getElementById('refFlag2').innerHTML = FLAGS.us;
-    document.getElementById('refFlag3').innerHTML = FLAGS.us;
     document.getElementById('refFlag4').innerHTML = FLAGS.us;
 
     if (rates.USD_OFI_RATE) {
@@ -1917,9 +1933,6 @@
     }
     if (rates.USD_BLUE_RATE) {
       document.getElementById('blueMid').textContent = '$ ' + fmtES(rates.USD_BLUE_RATE.venta || rates.USD_BLUE_RATE.mid);
-    }
-    if (rates.USD_MEP_RATE) {
-      document.getElementById('mepMid').textContent = '$ ' + fmtES(rates.USD_MEP_RATE.venta || rates.USD_MEP_RATE.mid);
     }
   }
 
@@ -1975,7 +1988,10 @@
     }
 
     let detailTxt = `${n} cuotas descontadas al ${fmtES(tasaDesc*100, 2)}% mensual.`;
-    if (tem !== null) detailTxt += ` TEM implícita: ${fmtES(tem*100, 2)}%.`;
+    if (tem !== null) {
+      const temPct = Math.abs(tem * 100) < 0.005 ? 0 : tem * 100;
+      detailTxt += ` TEM implícita: ${fmtES(temPct, 2)}%.`;
+    }
     document.getElementById('cuotasDetail').textContent = detailTxt;
 
     // Verdict
