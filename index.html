@@ -74,6 +74,9 @@
     color: var(--amber);
     margin: 0 4px;
   }
+  .brand h1 .tracker {
+    color: var(--emerald);
+  }
   .brand .sub {
     font-size: 13px;
     color: var(--ink-dim);
@@ -698,6 +701,15 @@
   }
   footer b { color: var(--ink); font-weight: 600; }
   footer a { color: var(--amber); text-decoration: none; }
+  footer .update {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.01em;
+  }
 
   /* ===== RESPONSIVE base ===== */
   @media (max-width: 760px) {
@@ -1305,7 +1317,7 @@
 
   <header>
     <div class="brand">
-      <h1>Best Purchase <em>·</em> Tracker</h1>
+      <h1>Best Purchase <em>·</em> <span class="tracker">Tracker</span></h1>
       <div class="sub">Compra inteligente · Argentina vs Exterior · Calendario de promos bancarias</div>
     </div>
     <div class="status">
@@ -1762,6 +1774,7 @@
     <div><b>IPC referencia:</b> INDEC marzo 2026 · 3,4% mensual · 32,6% i.a. · REM proyecta 2,6% promedio mensual abr–dic 2026.</div>
     <div><b>Dólar tarjeta:</b> oficial × 1,30 (RG 5617). Vigente para bienes y turismo en exterior. Suscripciones digitales: sin recargo desde 2/1/2026.</div>
     <div style="margin-top: 6px;">No constituye asesoramiento financiero. Verificá topes y vigencias en la fuente oficial antes de operar.</div>
+    <div class="update">Última actualización: 25 de abril de 2026</div>
   </footer>
 
 </div>
