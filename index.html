@@ -803,12 +803,12 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
-    min-width: 880px;            /* 7 columnas — un poco menos que antes con 8 */
+    min-width: 960px;
     table-layout: fixed;
   }
   /* Anchos: columna rubro fija + 7 columnas de día equipartidas */
-  .promo-grid col.col-rubro { width: 140px; }
-  .promo-grid col.col-day   { width: calc((100% - 140px) / 7); }
+  .promo-grid col.col-rubro { width: 180px; }
+  .promo-grid col.col-day   { width: calc((100% - 180px) / 7); }
 
   .promo-grid th, .promo-grid td {
     padding: 0;
@@ -839,27 +839,30 @@
     background: var(--bg-2);
   }
   .promo-grid tbody tr {
-    height: 160px;
+    height: 188px;
   }
   .promo-grid td.rubro-cell {
     background: var(--panel-2);
-    padding: 12px 14px;
-    font-weight: 600;
+    padding: 18px 18px;
+    font-weight: 700;
     color: var(--ink);
-    font-size: 12.5px;
-    white-space: nowrap;
+    font-size: 14px;
+    white-space: normal;
     position: sticky;
     left: 0;
     z-index: 2;
     border-right: 2px solid var(--border-strong);
     vertical-align: middle;
+    line-height: 1.3;
   }
   .promo-grid td.rubro-cell .rubro-emoji {
-    margin-right: 6px;
-    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 22px;
+    line-height: 1;
   }
   .promo-grid td.day-cell {
-    padding: 6px;
+    padding: 8px;
     vertical-align: top;
   }
   .promo-grid td.day-cell.empty {
@@ -872,9 +875,12 @@
     content: '·';
   }
   @media (max-width: 760px) {
-    .promo-grid tbody tr { height: 140px; }
-    .promo-grid col.col-rubro { width: 110px; }
-    .promo-grid { min-width: 760px; }
+    .promo-grid tbody tr { height: 160px; }
+    .promo-grid col.col-rubro { width: 130px; }
+    .promo-grid col.col-day   { width: calc((100% - 130px) / 7); }
+    .promo-grid { min-width: 820px; }
+    .promo-grid td.rubro-cell { padding: 14px 12px; font-size: 13px; }
+    .promo-grid td.rubro-cell .rubro-emoji { font-size: 18px; }
   }
 
   /* Sección Siempre — grid responsivo de cards */
@@ -1312,6 +1318,170 @@
     letter-spacing: 0.04em;
   }
 
+  /* ===== Country picker custom (dropdown con banderas) ===== */
+  .country-pick-custom {
+    position: relative;
+    width: 100%;
+  }
+  .country-pick-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: border-color 0.18s;
+  }
+  .country-pick-trigger:hover { border-color: var(--border-strong); }
+  .country-pick-custom.open .country-pick-trigger { border-color: var(--amber-dim); }
+  .country-pick-trigger .flag { flex-shrink: 0; }
+  .country-pick-name { flex: 1; text-align: left; letter-spacing: -0.01em; }
+  .country-pick-caret {
+    width: 12px; height: 12px;
+    color: var(--ink-mute);
+    flex-shrink: 0;
+    transition: transform 0.18s;
+  }
+  .country-pick-custom.open .country-pick-caret { transform: rotate(180deg); }
+  .country-pick-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--panel);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    padding: 4px;
+    z-index: 20;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .country-pick-custom.open .country-pick-list { display: flex; }
+  .country-pick-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 9px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .country-pick-opt:hover { background: var(--panel-2); }
+  .country-pick-opt .flag-opt { width: 22px; height: 15px; flex-shrink: 0; display: inline-block; border-radius: 2px; overflow: hidden; }
+  .country-pick-opt .flag-opt svg { width: 100%; height: 100%; display: block; }
+
+  /* ===== Canal toggle (segmented control) ===== */
+  .canal-toggle {
+    display: inline-flex;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+    width: 100%;
+  }
+  .canal-opt {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ink-dim);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: -0.01em;
+  }
+  .canal-opt:hover { color: var(--ink); }
+  .canal-opt.active {
+    background: rgba(255,194,92,0.12);
+    color: var(--amber);
+    box-shadow: 0 0 0 1px var(--amber-dim) inset;
+  }
+
+  /* ===== Leyenda de percepción ===== */
+  .perc-legend {
+    display: flex;
+    gap: 12px;
+    background: rgba(125,211,252,0.06);
+    border: 1px solid rgba(125,211,252,0.25);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .perc-legend-icon {
+    flex-shrink: 0;
+    color: var(--cyan);
+    font-size: 18px;
+    line-height: 1.2;
+    margin-top: 1px;
+  }
+  .perc-legend-body { flex: 1; min-width: 0; }
+  .perc-legend-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .perc-legend-desc {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+  }
+  .perc-legend-desc b { color: var(--ink); font-weight: 600; }
+
+  /* ===== Bank tag (rectángulo coloreado en grilla) ===== */
+  .bank-tag {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1.4;
+    margin-top: 3px;
+    align-self: flex-start;
+  }
+  .bank-tag.bank-tag-ICBC    { background: var(--icbc); }
+  .bank-tag.bank-tag-GALICIA { background: var(--galicia); }
+  .bank-tag.bank-tag-BBVA    { background: var(--bbva); }
+
+  /* ===== Bank chip (filtro con logo) ===== */
+  .bank-chip { padding-left: 8px; }
+  .bank-chip-logo {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 3px;
+    padding: 1px;
+    flex-shrink: 0;
+  }
+  .bank-chip.bank-chip-ICBC.active    { background: rgba(217,38,63,0.14);   color: var(--icbc);    border-color: var(--icbc); }
+  .bank-chip.bank-chip-GALICIA.active { background: rgba(232,116,0,0.14);   color: var(--galicia); border-color: var(--galicia); }
+  .bank-chip.bank-chip-BBVA.active    { background: rgba(10,58,124,0.18);   color: #5b9bff;        border-color: var(--bbva); }
+
 </style>
 </head>
 <body>
@@ -1388,7 +1558,7 @@
       </button>
       <button class="subtab" data-subtab="paises">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        Argentina vs exterior
+        🌎 Argentina vs exterior
       </button>
     </div>
 
@@ -1533,14 +1703,19 @@
           <div class="form-grid form-grid-2">
             <div class="field">
               <label for="paisesPais">País</label>
-              <div class="country-pick">
-                <span class="flag" id="paisesFlagSel"></span>
-                <select id="paisesPais">
-                  <option value="USD">Estados Unidos · USD</option>
-                  <option value="EUR">Europa · EUR</option>
-                  <option value="BRL">Brasil · BRL</option>
-                  <option value="CLP">Chile · CLP</option>
-                </select>
+              <div class="country-pick-custom" id="paisesPaisDropdown">
+                <button type="button" class="country-pick-trigger" id="paisesPaisTrigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="flag" id="paisesFlagSel"></span>
+                  <span class="country-pick-name" id="paisesPaisName">Estados Unidos · USD</span>
+                  <svg class="country-pick-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="country-pick-list" role="listbox" aria-label="Elegir país">
+                  <button type="button" class="country-pick-opt" role="option" data-value="USD" data-flag="us" data-label="Estados Unidos · USD"><span class="flag flag-opt"></span><span>Estados Unidos · USD</span></button>
+                  <button type="button" class="country-pick-opt" role="option" data-value="EUR" data-flag="eu" data-label="Europa · EUR"><span class="flag flag-opt"></span><span>Europa · EUR</span></button>
+                  <button type="button" class="country-pick-opt" role="option" data-value="BRL" data-flag="br" data-label="Brasil · BRL"><span class="flag flag-opt"></span><span>Brasil · BRL</span></button>
+                  <button type="button" class="country-pick-opt" role="option" data-value="CLP" data-flag="cl" data-label="Chile · CLP"><span class="flag flag-opt"></span><span>Chile · CLP</span></button>
+                </div>
+                <input type="hidden" id="paisesPais" value="USD">
               </div>
               <span class="hint">Tienda donde estás mirando el precio.</span>
             </div>
@@ -1560,22 +1735,22 @@
 
           <div class="form-grid form-grid-1" style="margin-top:12px;">
             <div class="field">
-              <label for="paisesCanalEXT">Canal de pago</label>
-              <select class="select" id="paisesCanalEXT">
-                <option value="tarjeta">Tarjeta argentina (dólar tarjeta)</option>
-                <option value="dolares">Dólares propios (oficial)</option>
-                <option value="mep">Dólares vía MEP</option>
-              </select>
-              <span class="hint">Cómo bancás la compra en exterior.</span>
+              <label>Canal de pago</label>
+              <div class="canal-toggle" id="paisesCanalGroup" role="tablist" aria-label="Tipo de cambio">
+                <button type="button" class="canal-opt active" data-value="oficial" role="tab" aria-selected="true">Dólar Oficial</button>
+                <button type="button" class="canal-opt" data-value="blue" role="tab" aria-selected="false">Dólar Blue</button>
+              </div>
+              <input type="hidden" id="paisesCanalEXT" value="oficial">
+              <span class="hint">Cotización con la que pesificás la compra en exterior.</span>
             </div>
           </div>
 
-          <div class="toggle-row" style="margin-top:12px;">
-            <div class="lbl">
-              Incluir percepción 30% (Ganancias / B. Personales)
-              <span class="desc">Aplica a compras de bienes y turismo en exterior con tarjeta. NO aplica a suscripciones digitales desde 2/1/2026.</span>
+          <div class="perc-legend" style="margin-top:14px;">
+            <div class="perc-legend-icon" aria-hidden="true">ⓘ</div>
+            <div class="perc-legend-body">
+              <div class="perc-legend-title">Sin percepción del 30% · RG 5617</div>
+              <div class="perc-legend-desc">Los valores asumen que cancelás el saldo de la tarjeta de crédito en USD <b>antes del vencimiento</b>, evitando la percepción a cuenta de Ganancias / Bienes Personales (30%). Tampoco aplica si pagás con dólares propios o si la compra es una suscripción digital (exenta desde 2/1/2026).</div>
             </div>
-            <div class="switch on" id="togglePerc30"></div>
           </div>
         </div>
       </div>
@@ -1614,20 +1789,18 @@
         <div style="font-size: 13px; line-height: 1.65; color: var(--ink-dim);">
           <p style="margin-bottom: 10px;"><b style="color: var(--ink);">El principio:</b> ambos lados se llevan a pesos del momento de la compra (sin descontar inflación, porque las dos opciones se pagan al mismo tiempo). Lo que cambia es el tipo de cambio que pesifica al exterior.</p>
           <p style="margin-bottom: 10px;"><b style="color: var(--ink);">ARG:</b> precio × (1 − descuento). Si no aplicás descuento, queda el precio de lista.</p>
-          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Exterior · tarjeta argentina:</b> precio extranjero × dólar oficial × (1 + percepción). Con percepción del 30% activa, equivale a multiplicar el oficial por 1,30 (RG 5617, sigue vigente para bienes y turismo en exterior).</p>
-          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Exterior · dólares propios al oficial:</b> precio extranjero × oficial. Es el canal más barato — comprás los dólares al oficial (sin límite ni cepo desde 2024) y los aplicás directamente a la tarjeta antes del vencimiento, evitando la percepción del 30%.</p>
-          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Exterior · MEP:</b> precio extranjero × dólar MEP. Levemente más caro que oficial pero sin restricciones de monto. Útil cuando no podés acceder al oficial o necesitás volúmenes grandes.</p>
+          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Exterior · Dólar Oficial:</b> precio extranjero × dólar oficial venta. Es el canal más barato — comprás los dólares al oficial (sin límite ni cepo desde 2024) y los aplicás directamente a la tarjeta antes del vencimiento, evitando la percepción del 30% (RG 5617).</p>
+          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Exterior · Dólar Blue:</b> precio extranjero × dólar blue venta. Útil cuando comprás dólares en el mercado paralelo. Suele ser más caro que el oficial pero no requiere bancarización.</p>
           <p><b style="color: var(--ink);">Cross-rates:</b> EUR, BRL y CLP se convierten primero a USD usando los pares de mercado (DolarApi para EUR/ARS, AwesomeAPI para USD/BRL, cl.dolarapi para USD/CLP), y de ahí se aplica el canal elegido.</p>
         </div>
       </details>
 
       <details>
-        <summary>Cuándo NO aplica el 30% · escenarios prácticos</summary>
+        <summary>Sobre la percepción del 30% (RG 5617)</summary>
         <div style="font-size: 13px; line-height: 1.65; color: var(--ink-dim);">
-          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Suscripciones digitales (Netflix, Spotify, Apple, etc.):</b> desde el 2/1/2026 no se aplica la percepción del 30% si pagás en pesos. Usá el toggle OFF.</p>
-          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Pagando con dólares propios:</b> nunca aplica percepción. El sistema bancario no la cobra si la cuenta corriente en USD cubre el saldo a vencimiento.</p>
-          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">Pagando vía MEP:</b> tampoco aplica percepción del 30%, pero tenés el spread del MEP sobre el oficial.</p>
-          <p><b style="color: var(--ink);">Sí aplica (toggle ON):</b> compras de bienes en e-commerce internacional con tarjeta + servicios turísticos (pasajes, hoteles, paquetes, alquileres en exterior).</p>
+          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">El simulador asume que NO aplica.</b> Los valores mostrados toman dólar oficial / blue puros, sin recargo del 30%.</p>
+          <p style="margin-bottom: 10px;"><b style="color: var(--ink);">No aplica si:</b> cancelás el saldo de la tarjeta en USD antes del vencimiento; pagás con dólares propios; o la compra es una suscripción digital (Netflix, Spotify, Apple, etc., exentas desde 2/1/2026).</p>
+          <p><b style="color: var(--ink);">Sí aplica:</b> si pagás el resumen en pesos sin cancelar en USD, sumá un 30% al cálculo de "Dólar Oficial" para tener el costo real.</p>
         </div>
       </details>
     </div>
@@ -1668,10 +1841,10 @@
       <div class="promo-filters">
         <div class="filter-row">
           <span class="filter-label">Banco</span>
-          <button class="chip active" data-filter="bank" data-value="ALL">Todos</button>
-          <button class="chip" data-filter="bank" data-value="ICBC">ICBC</button>
-          <button class="chip" data-filter="bank" data-value="GALICIA">Galicia</button>
-          <button class="chip" data-filter="bank" data-value="BBVA">BBVA</button>
+          <button class="chip bank-chip active" data-filter="bank" data-value="ALL">Todos</button>
+          <button class="chip bank-chip bank-chip-ICBC" data-filter="bank" data-value="ICBC"><img class="bank-chip-logo" src="https://img.logo.dev/icbc.com.ar?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ&size=64&format=png" alt="" onerror="this.style.display='none'"><span>ICBC</span></button>
+          <button class="chip bank-chip bank-chip-GALICIA" data-filter="bank" data-value="GALICIA"><img class="bank-chip-logo" src="https://img.logo.dev/galicia.ar?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ&size=64&format=png" alt="" onerror="this.style.display='none'"><span>Galicia</span></button>
+          <button class="chip bank-chip bank-chip-BBVA" data-filter="bank" data-value="BBVA"><img class="bank-chip-logo" src="https://img.logo.dev/bbva.com.ar?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ&size=64&format=png" alt="" onerror="this.style.display='none'"><span>BBVA</span></button>
         </div>
         <div class="filter-row">
           <span class="filter-label">Rubro</span>
@@ -1680,14 +1853,6 @@
           <button class="chip" data-filter="rubro" data-value="Combustible">⛽ Combustible</button>
           <button class="chip" data-filter="rubro" data-value="Gastronomía">🍴 Gastro</button>
           <button class="chip" data-filter="rubro" data-value="Indumentaria">👕 Ropa</button>
-        </div>
-        <div class="filter-row">
-          <span class="filter-label">% mín.</span>
-          <button class="chip active" data-filter="pct" data-value="0"><span class="pct">0</span>%</button>
-          <button class="chip" data-filter="pct" data-value="15"><span class="pct">15</span>%</button>
-          <button class="chip" data-filter="pct" data-value="20"><span class="pct">20</span>%</button>
-          <button class="chip" data-filter="pct" data-value="25"><span class="pct">25</span>%</button>
-          <button class="chip" data-filter="pct" data-value="30"><span class="pct">30</span>%</button>
         </div>
       </div>
     </div>
@@ -2119,7 +2284,6 @@
     const precioEXT = parseESAR(document.getElementById('paisesPrecioEXT').value);
     const monedaEXT = document.getElementById('paisesPais').value;
     const canalEXT = document.getElementById('paisesCanalEXT').value;
-    const incluyePerc = document.getElementById('togglePerc30').classList.contains('on');
 
     // ARG: precio final con descuento
     const argFinal = precioARG * (1 - dPctARG);
@@ -2127,7 +2291,7 @@
     // Convertir precio extranjero a USD equivalente
     // Usamos VENTA oficial (la que paga el comprador en banco — el más caro de los dos lados del oficial)
     const usdOfi = rates.USD_OFI_RATE.venta || rates.USD_OFI_RATE.mid;
-    const usdMep = rates.USD_MEP_RATE?.venta || rates.USD_MEP_RATE?.mid || usdOfi;
+    const usdBlue = rates.USD_BLUE_RATE?.venta || rates.USD_BLUE_RATE?.mid || usdOfi;
 
     let precioEnUSD = 0;
     if (monedaEXT === 'USD') {
@@ -2145,15 +2309,13 @@
 
     // Pesificar según canal
     let arsPerUsdEffective, canalLabel;
-    if (canalEXT === 'tarjeta') {
-      arsPerUsdEffective = usdOfi * (incluyePerc ? (1 + PERC_30) : 1);
-      canalLabel = incluyePerc ? `Dólar tarjeta · oficial × 1,30 = $ ${fmtES(arsPerUsdEffective)}` : `Dólar oficial sin percepción · $ ${fmtES(arsPerUsdEffective)}`;
-    } else if (canalEXT === 'dolares') {
+    if (canalEXT === 'blue') {
+      arsPerUsdEffective = usdBlue;
+      canalLabel = `Dólar Blue · $ ${fmtES(usdBlue)}`;
+    } else {
+      // 'oficial' por default
       arsPerUsdEffective = usdOfi;
-      canalLabel = `Dólares propios al oficial · $ ${fmtES(usdOfi)}`;
-    } else if (canalEXT === 'mep') {
-      arsPerUsdEffective = usdMep;
-      canalLabel = `Dólares vía MEP · $ ${fmtES(usdMep)}`;
+      canalLabel = `Dólar Oficial · $ ${fmtES(usdOfi)}`;
     }
 
     const extFinal = precioEnUSD * arsPerUsdEffective;
@@ -2312,12 +2474,50 @@
   const paisesPrecioEXTEl = document.getElementById('paisesPrecioEXT');
   paisesPrecioEXTEl.addEventListener('input', () => { liveFormat(paisesPrecioEXTEl, 2); simularPaises(); });
   document.getElementById('paisesDescARG').addEventListener('input', simularPaises);
-  ['paisesPais', 'paisesCanalEXT'].forEach(id => {
-    document.getElementById(id).addEventListener('change', simularPaises);
+
+  // País dropdown custom (con banderas)
+  const paisDropdown = document.getElementById('paisesPaisDropdown');
+  const paisTrigger  = document.getElementById('paisesPaisTrigger');
+  paisTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    paisDropdown.classList.toggle('open');
+    paisTrigger.setAttribute('aria-expanded', paisDropdown.classList.contains('open'));
   });
-  document.getElementById('togglePerc30').addEventListener('click', function () {
-    this.classList.toggle('on');
-    simularPaises();
+  document.querySelectorAll('#paisesPaisDropdown .country-pick-opt').forEach(opt => {
+    // Renderizar bandera dentro de la opción
+    const flagKey = opt.dataset.flag;
+    const flagEl = opt.querySelector('.flag-opt');
+    if (flagEl && FLAGS[flagKey]) flagEl.innerHTML = FLAGS[flagKey];
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const val = opt.dataset.value;
+      document.getElementById('paisesPais').value = val;
+      document.getElementById('paisesPaisName').textContent = opt.dataset.label;
+      paisDropdown.classList.remove('open');
+      paisTrigger.setAttribute('aria-expanded', 'false');
+      updatePaisesPickerVisuals();
+      simularPaises();
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!paisDropdown.contains(e.target)) {
+      paisDropdown.classList.remove('open');
+      paisTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Canal de pago (segmented control Oficial / Blue)
+  document.querySelectorAll('#paisesCanalGroup .canal-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#paisesCanalGroup .canal-opt').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById('paisesCanalEXT').value = btn.dataset.value;
+      simularPaises();
+    });
   });
 
   // ============================================================
@@ -2363,16 +2563,20 @@
     'BBVA': 'bbva.com.ar'
   };
 
-  let promoState = { bank: 'ALL', rubro: 'ALL', pct: 0 };
+  let promoState = { bank: 'ALL', rubro: 'ALL' };
 
   function bankBadgeHTML(plataforma, isDetail = false) {
-    const dom = BANK_DOMAINS[plataforma];
-    const initial = plataforma ? plataforma.charAt(0) : '?';
-    const cls = isDetail ? 'detail-bank-badge' : 'promo-bank-badge';
-    if (!dom) return `<div class="${cls} ${plataforma}">${initial}</div>`;
-    return `<div class="${cls} ${plataforma}" title="${escapeHTML(plataforma)}">
-      <img src="https://img.logo.dev/${dom}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ&size=128&format=png" alt="${escapeHTML(plataforma)}" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=${dom}&sz=128';this.onerror=()=>{this.style.display='none';this.parentElement.textContent='${initial}'}">
-    </div>`;
+    if (isDetail) {
+      // Detalle modal: mantenemos el logo circular
+      const dom = BANK_DOMAINS[plataforma];
+      const initial = plataforma ? plataforma.charAt(0) : '?';
+      if (!dom) return `<div class="detail-bank-badge ${plataforma}">${initial}</div>`;
+      return `<div class="detail-bank-badge ${plataforma}" title="${escapeHTML(plataforma)}">
+        <img src="https://img.logo.dev/${dom}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ&size=128&format=png" alt="${escapeHTML(plataforma)}" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=${dom}&sz=128';this.onerror=()=>{this.style.display='none';this.parentElement.textContent='${initial}'}">
+      </div>`;
+    }
+    // En la grilla: rectángulo coloreado con el nombre del banco — más legible
+    return `<span class="bank-tag bank-tag-${plataforma}" title="${escapeHTML(plataforma)}">${escapeHTML(plataforma)}</span>`;
   }
 
   function commerceLogoHTML(comercio, isDetail = false) {
@@ -2408,7 +2612,6 @@
     return PROMOS.filter(p => {
       if (promoState.bank !== 'ALL' && p.plataforma !== promoState.bank) return false;
       if (promoState.rubro !== 'ALL' && p.rubro !== promoState.rubro) return false;
-      if (p.pct < promoState.pct) return false;
       // Hide expired
       const info = getExpiryInfo(p);
       if (info.daysLeft !== null && info.daysLeft < 0) return false;
@@ -2426,11 +2629,11 @@
     return `<div class="promo-card bank-${p.plataforma}" data-id="${p.id}">
       <div class="promo-logo-stack">
         ${commerceLogoHTML(p.comercio)}
-        ${bankBadgeHTML(p.plataforma)}
       </div>
       <div class="promo-info">
         <div class="promo-pct">${p.pct}%</div>
         <div class="promo-comercio">${escapeHTML(p.comercio)}</div>
+        ${bankBadgeHTML(p.plataforma)}
         ${flagHTML ? `<div class="promo-card-meta">${flagHTML}</div>` : ''}
       </div>
     </div>`;
